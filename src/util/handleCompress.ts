@@ -1,6 +1,7 @@
 import { FastifyRequest, RouteHandlerMethod } from "fastify";
 
 import { CompressionOptions, compressImageAndReturn } from "./compressImage.js";
+import compressVideoAndReturn from "./compressVideo.js";
 
 const createCompressionProps = (req: FastifyRequest) => {
   var props = {
@@ -43,7 +44,10 @@ const handleCompress: RouteHandlerMethod = async (req, res) => {
   }
 
   if (file.mimetype.startsWith("image/"))
-    return compressImageAndReturn(file, createCompressionProps(req), res);
+    return compressImageAndReturn(file, createCompressionProps(req), req, res);
+
+  if (file.mimetype.startsWith("video/"))
+    return compressVideoAndReturn(file, createCompressionProps(req), req, res);
 
   res.status(400);
   return { error: "Invalid file" };

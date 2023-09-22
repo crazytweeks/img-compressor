@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@fastify/multipart": "^7.7.3",
+    "@fastify/static": "^6.11.2",
     "fastify": "^4.23.2",
+    "fluent-ffmpeg": "^2.1.2",
     "form-auto-content": "^3.2.0",
     "fs": "0.0.1-security",
     "sharp": "^0.32.5"
   },
   "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.22",
     "@types/node": "^20.6.1",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",

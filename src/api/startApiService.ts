@@ -10,6 +10,14 @@ const startApiService = async (server: Server) => {
     handleCompress
   );
 
+  server.post(
+    "/compress/video",
+    {
+      bodyLimit: 104857600000, // 100MB
+    },
+    handleCompress
+  );
+
   server.get("/", (req, res) => res.send("hello"));
 };
 

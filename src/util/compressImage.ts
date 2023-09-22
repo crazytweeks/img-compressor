@@ -2,7 +2,8 @@ import sharp, { type ResizeOptions } from "sharp";
 import fs from "fs";
 
 import type { MultipartFile } from "@fastify/multipart";
-import { FastifyReply } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
+import fileSteamToBuffer from "./fileSteamToBuffer.js";
 
 type CompressionOptions = {
   resize?: ResizeOptions;
@@ -28,18 +29,10 @@ type CompressionOptions = {
 //   }
 // };
 
-const fileSteamToBuffer = (file: fs.ReadStream) => {
-  const chunks: Buffer[] = [];
-  return new Promise<Buffer>((resolve, reject) => {
-    file.on("data", (chunk: Buffer) => chunks.push(chunk));
-    file.on("error", (err) => reject(err));
-    file.on("end", () => resolve(Buffer.concat(chunks)));
-  });
-};
-
 const compressImageAndReturn = async (
   media: MultipartFile,
   compressionOptions: CompressionOptions,
+  req: FastifyRequest,
   res: FastifyReply
 ) => {
   const { mimetype, fieldname, file, filename, encoding, type } = media;

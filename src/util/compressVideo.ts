@@ -88,8 +88,6 @@ const compressAndReturnPath = async (
         .toFormat(
           compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
         )
-        .audioQuality(0)
-        .videoBitrate(`0k`)
         .autopad()
         .size(
           compressionOptions?.quality

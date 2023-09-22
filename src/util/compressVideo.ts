@@ -1,11 +1,16 @@
 import { MultipartFile } from "@fastify/multipart";
-import { CompressionOptions } from "./compressImage.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import fs from "fs";
 
 import ffmpeg from "fluent-ffmpeg";
 
 const tempPath = `./media/`;
+
+interface VideoCompressionOptions {
+  allThreads?: boolean;
+  fps?: number;
+  toFormat?: string;
+}
 
 const dumpVideoToTempDisk = async (media: MultipartFile) => {
   return new Promise<string>((resolve, reject) => {
@@ -31,7 +36,10 @@ const dumpVideoToTempDisk = async (media: MultipartFile) => {
   });
 };
 
-const compressAndReturnPath = async (tempPath: string) => {
+const compressAndReturnPath = async (
+  tempPath: string,
+  compressionOptions?: VideoCompressionOptions
+) => {
   return new Promise<string>(async (resolve, reject) => {
     try {
       const ffmpegCommand = ffmpeg(tempPath);
@@ -41,7 +49,7 @@ const compressAndReturnPath = async (tempPath: string) => {
       ffmpegCommand
 
         .addOptions([
-          "-threads 0", // Multithreading
+          `-threads ${compressionOptions?.allThreads ? "0" : "1"}`, // Multithreading
           "-preset ultrafast", // Preset for speed
           "-crf 28", // Constant Rate Factor (0-51) 0 is lossless, 51 is worst quality
           "-profile:v baseline", // Profile for older devices
@@ -49,8 +57,10 @@ const compressAndReturnPath = async (tempPath: string) => {
           "-movflags faststart", // Fast start for streaming
           "-pix_fmt yuv420p", // Pixel format
         ])
-        .FPS(24)
-        .toFormat("mp4")
+        .FPS(compressionOptions?.fps ? compressionOptions.fps : 24)
+        .toFormat(
+          compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
+        )
         .audioQuality(0)
         .videoBitrate(`0k`)
         .autopad()
@@ -75,15 +85,15 @@ const compressAndReturnPath = async (tempPath: string) => {
 
 const compressVideoAndReturn = async (
   media: MultipartFile,
-  compressionOptions: CompressionOptions,
+  compressionOptions: VideoCompressionOptions,
   req: FastifyRequest,
   res: FastifyReply
 ) => {
   const tempFilePath = await dumpVideoToTempDisk(media);
 
-  const compressedFilePath = (await compressAndReturnPath(tempFilePath)).slice(
-    1
-  );
+  const compressedFilePath = (
+    await compressAndReturnPath(tempFilePath, compressionOptions)
+  ).slice(1);
 
   const reqUrl = req.url;
   const reqHost = req.headers.host;
@@ -105,3 +115,4 @@ const compressVideoAndReturn = async (
 };
 
 export default compressVideoAndReturn;
+export type { VideoCompressionOptions };

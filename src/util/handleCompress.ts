@@ -2,6 +2,7 @@ import { FastifyRequest, RouteHandlerMethod } from "fastify";
 
 import { CompressionOptions, compressImageAndReturn } from "./compressImage.js";
 import compressVideoAndReturn from "./compressVideo.js";
+import type { VideoCompressionOptions } from "./compressVideo.js";
 
 const createCompressionProps = (req: FastifyRequest) => {
   var props = {
@@ -35,6 +36,24 @@ const createCompressionProps = (req: FastifyRequest) => {
   return props;
 };
 
+const createVideoCompressionProps = (req: FastifyRequest) => {
+  var props = {
+    fps: 24,
+    toFormat: "mp4",
+    allThreads: false,
+  } as VideoCompressionOptions;
+
+  const query: VideoCompressionOptions = JSON.parse(
+    JSON.stringify(req.query as unknown as string)
+  );
+
+  if (query.fps) props.fps = parseInt(query.fps as unknown as string);
+  if (query.toFormat) props.toFormat = query.toFormat;
+  if (query.allThreads) props.allThreads = query.allThreads === true;
+
+  return props;
+};
+
 const handleCompress: RouteHandlerMethod = async (req, res) => {
   const file = await req.file();
 
@@ -47,7 +66,12 @@ const handleCompress: RouteHandlerMethod = async (req, res) => {
     return compressImageAndReturn(file, createCompressionProps(req), req, res);
 
   if (file.mimetype.startsWith("video/"))
-    return compressVideoAndReturn(file, createCompressionProps(req), req, res);
+    return compressVideoAndReturn(
+      file,
+      createVideoCompressionProps(req),
+      req,
+      res
+    );
 
   res.status(400);
   return { error: "Invalid file" };

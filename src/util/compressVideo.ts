@@ -131,6 +131,7 @@ const compressVideoAndReturn = async (
   res: FastifyReply
 ) => {
   try {
+    const timeStart = Date.now();
     const tempFilePath = await dumpVideoToTempDisk(media);
 
     const compressedFilePath = (
@@ -153,7 +154,9 @@ const compressVideoAndReturn = async (
 
     fsRemoveFile(tempFilePath);
 
-    res.send({
+    const timeEnd = Date.now();
+
+    const data = {
       compressedFileUrl,
       reqUrl,
       reqHost,
@@ -165,7 +168,16 @@ const compressVideoAndReturn = async (
         originalFileSize,
         originalFileSizeInMB,
       },
-    });
+
+      time: {
+        timeStart,
+        timeEnd,
+        timeTaken: timeEnd - timeStart,
+        timeTakenInSeconds: (timeEnd - timeStart) / 1000,
+      },
+    };
+
+    res.send(data);
 
     return compressedFilePath;
   } catch (err) {

@@ -11,7 +11,7 @@ const startServer = async () => {
     const url =
       typeof address === "string" ? address : `http://localhost:${SERVER_PORT}`;
 
-    console.warn(`Server listening on ${url}`);
+    console.info(`Server listening on ${url}`);
 
     startApiService(server);
   } catch (err) {

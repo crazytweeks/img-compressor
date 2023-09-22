@@ -118,13 +118,13 @@ const compressVideoAndReturn = async (
 
     res.header("Content-Type", "json/application");
 
-    const fileSize = fs.statSync(compressedFilePath).size;
+    const fileSize = fs.statSync(`.${compressedFilePath}`).size;
     const fileSizeInMB = fileSize / 1000000.0;
 
-    const originalFileSize = fs.statSync(`.${tempFilePath}`).size;
+    const originalFileSize = fs.statSync(tempFilePath).size;
     const originalFileSizeInMB = originalFileSize / 1000000.0;
 
-    fsRemoveFile(`.${tempFilePath}`);
+    fsRemoveFile(tempFilePath);
 
     res.send({
       compressedFileUrl,

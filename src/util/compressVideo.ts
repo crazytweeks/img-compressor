@@ -12,6 +12,7 @@ interface VideoCompressionOptions {
   fps?: number;
   toFormat?: string;
   quality?: number;
+  speed?: number;
 }
 
 const dumpVideoToTempDisk = async (media: MultipartFile) => {
@@ -52,16 +53,42 @@ const compressAndReturnPath = async (
         compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
       }`.replace(`.${fileExtention}`, "");
 
+      const options = [
+        `-threads ${compressionOptions?.allThreads ? "0" : "1"}`, // Multithreading
+        "-profile:v baseline", // Profile for older devices
+        "-level 3.0", // Level for older devices
+        "-movflags faststart", // Fast start for streaming
+        "-pix_fmt yuv420p", // Pixel format
+        "-vcoder libx264", // Video Codec
+      ];
+
+      if (compressionOptions?.speed) {
+        options.push(
+          `-speed ${
+            compressionOptions.speed > 8
+              ? 8
+              : compressionOptions.speed < 0
+              ? 0
+              : compressionOptions.speed
+          }`
+        );
+
+        options.push(
+          `-crf ${
+            compressionOptions.speed > 51
+              ? 51
+              : compressionOptions.speed < 0
+              ? 0
+              : compressionOptions.speed * 5
+          }`
+        );
+      } else {
+        options.push("-preset ultrafast");
+        options.push("-crf 28");
+      }
+
       ffmpegCommand
-        .addOptions([
-          `-threads ${compressionOptions?.allThreads ? "0" : "1"}`, // Multithreading
-          "-preset ultrafast", // Preset for speed
-          "-crf 28", // Constant Rate Factor (0-51) 0 is lossless, 51 is worst quality
-          "-profile:v baseline", // Profile for older devices
-          "-level 3.0", // Level for older devices
-          "-movflags faststart", // Fast start for streaming
-          "-pix_fmt yuv420p", // Pixel format
-        ])
+        .addOptions(options)
         .FPS(compressionOptions?.fps ? compressionOptions.fps : 24)
         .toFormat(
           compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"

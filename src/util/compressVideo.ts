@@ -82,22 +82,22 @@ const compressAndReturnPath = async (
           }`
         );
       } else {
-        options.push("-preset podcast");
+        options.push("-preset superfast");
         options.push("-crf 28");
       }
 
       ffmpegCommand
         .addOptions(options)
         .FPS(compressionOptions?.fps ? compressionOptions.fps : 24)
-        .size(
-          compressionOptions?.quality
-            ? `${
-                compressionOptions.quality >= 100
-                  ? 100
-                  : compressionOptions.quality
-              }%`
-            : "80%"
-        )
+        // .size(
+        //   compressionOptions?.quality
+        //     ? `${
+        //         compressionOptions.quality >= 100
+        //           ? 100
+        //           : compressionOptions.quality
+        //       }%`
+        //     : "80%"
+        // )
         .toFormat(
           compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
         )

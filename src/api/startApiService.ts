@@ -9,6 +9,8 @@ const startApiService = async (server: Server) => {
     },
     handleCompress
   );
+
+  server.get("/", (req, res) => res.send("hello"));
 };
 
 export default startApiService;

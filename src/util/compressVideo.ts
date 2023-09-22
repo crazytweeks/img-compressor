@@ -41,13 +41,13 @@ const compressAndReturnPath = async (tempPath: string) => {
       ffmpegCommand
 
         .addOptions([
-          "-threads 1",
-          "-preset ultrafast",
-          "-crf 28",
-          "-profile:v baseline",
-          "-level 3.0",
-          "-movflags faststart",
-          "-pix_fmt yuv420p",
+          "-threads 0", // Multithreading
+          "-preset ultrafast", // Preset for speed
+          "-crf 28", // Constant Rate Factor (0-51) 0 is lossless, 51 is worst quality
+          "-profile:v baseline", // Profile for older devices
+          "-level 3.0", // Level for older devices
+          "-movflags faststart", // Fast start for streaming
+          "-pix_fmt yuv420p", // Pixel format
         ])
         .FPS(24)
         .toFormat("mp4")

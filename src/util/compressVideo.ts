@@ -83,7 +83,7 @@ const compressAndReturnPath = async (
           }`
         );
       } else {
-        options.push("-preset ultrafast");
+        options.push("-preset podcast");
         options.push("-crf 28");
       }
 
@@ -95,7 +95,6 @@ const compressAndReturnPath = async (
         )
         .audioQuality(0)
         .videoBitrate(`0k`)
-        .preset("superfast")
         .autopad()
         .size(
           compressionOptions?.quality

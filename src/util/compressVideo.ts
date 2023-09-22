@@ -55,6 +55,10 @@ const compressAndReturnPath = async (
 
       const options = [
         `-threads ${compressionOptions?.allThreads ? "0" : "1"}`, // Multithreading
+        "-profile:v baseline", // Profile for older devices
+        "-level 3.0", // Level for older devices
+        "-movflags faststart", // Fast start for streaming
+        "-pix_fmt yuv420p", // Pixel format
       ];
 
       if (compressionOptions?.speed) {
@@ -85,10 +89,6 @@ const compressAndReturnPath = async (
       ffmpegCommand
         .addOptions(options)
         .FPS(compressionOptions?.fps ? compressionOptions.fps : 24)
-        .toFormat(
-          compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
-        )
-        .autopad()
         .size(
           compressionOptions?.quality
             ? `${
@@ -98,6 +98,13 @@ const compressAndReturnPath = async (
               }%`
             : "80%"
         )
+        .toFormat(
+          compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
+        )
+        .audioQuality(0)
+        .videoBitrate(`0k`)
+        .autopad()
+
         .on("progress", function (progress) {
           console.log("progress: ", progress.percent);
         })

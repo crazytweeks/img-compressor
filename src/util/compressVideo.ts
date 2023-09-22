@@ -3,6 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import fs from "fs";
 
 import ffmpeg from "fluent-ffmpeg";
+import fsRemoveFile from "./fsRemoveFile.js";
 
 const tempPath = `./media/`;
 
@@ -113,15 +114,29 @@ const compressVideoAndReturn = async (
   const protocol = req.protocol;
 
   const compressedFileUrl = `${protocol}://${reqHost}${compressedFilePath}`;
-  console.log("compressedFileUrl: ", compressedFileUrl);
 
   res.header("Content-Type", "json/application");
+
+  const fileSize = fs.statSync(compressedFilePath).size;
+  const fileSizeInMB = fileSize / 1000000.0;
+
+  const originalFileSize = fs.statSync(tempFilePath).size;
+  const originalFileSizeInMB = originalFileSize / 1000000.0;
+
+  fsRemoveFile(tempFilePath);
 
   res.send({
     compressedFileUrl,
     reqUrl,
     reqHost,
     compressedFilePath,
+    size: {
+      fileSize,
+      fileSizeInMB,
+
+      originalFileSize,
+      originalFileSizeInMB,
+    },
   });
 
   return compressedFilePath;

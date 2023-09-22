@@ -44,10 +44,13 @@ const compressAndReturnPath = async (
     try {
       const ffmpegCommand = ffmpeg(tempPath);
 
-      const filePath = `${tempPath}_compressed.mp4`;
+      const fileExtention = tempPath.split(".").pop();
+
+      const filePath = `${tempPath}_compressed.${
+        compressionOptions?.toFormat ? compressionOptions.toFormat : "mp4"
+      }`.replace(`.${fileExtention}`, "");
 
       ffmpegCommand
-
         .addOptions([
           `-threads ${compressionOptions?.allThreads ? "0" : "1"}`, // Multithreading
           "-preset ultrafast", // Preset for speed

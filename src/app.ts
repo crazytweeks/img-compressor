@@ -1,5 +1,5 @@
-import { startApiService } from "./api/startApiService";
-import { server } from "./server";
+import startApiService from "./api/startApiService.js";
+import { server } from "./server.js";
 
 const SERVER_PORT = 8080;
 

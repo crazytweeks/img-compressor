@@ -1,20 +1,20 @@
 {
   "name": "img-compressor",
-  "module": "index.ts",
   "type": "module",
+  "version": "0.1.0",
+  "description": "A simple image compressor",
+  "main": "dist/app.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/app.js",
+    "build": "tsc",
+    "start": "node --experimental-modules --es-module-specifier-resolution=node dist/app.js",
     "dev": "nodemon"
   },
   "dependencies": {
     "@fastify/multipart": "^7.7.3",
     "fastify": "^4.23.2",
-    "ffmpeg": "^0.0.4",
     "form-auto-content": "^3.2.0",
     "fs": "0.0.1-security",
-    "sharp": "^0.32.5",
-    "tap": "^16.3.8"
+    "sharp": "^0.32.5"
   },
   "devDependencies": {
     "@types/node": "^20.6.1",

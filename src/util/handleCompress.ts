@@ -1,6 +1,6 @@
 import { FastifyRequest, RouteHandlerMethod } from "fastify";
 
-import { CompressionOptions, compressImageAndReturn } from "./compressImage";
+import { CompressionOptions, compressImageAndReturn } from "./compressImage.js";
 
 const createCompressionProps = (req: FastifyRequest) => {
   var props = {
@@ -49,4 +49,4 @@ const handleCompress: RouteHandlerMethod = async (req, res) => {
   return { error: "Invalid file" };
 };
 
-export { handleCompress };
+export default handleCompress;

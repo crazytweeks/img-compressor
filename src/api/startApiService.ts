@@ -1,5 +1,5 @@
-import { handleCompress } from "../util/handleCompress";
-import { Server } from "../server";
+import handleCompress from "../util/handleCompress.js";
+import { Server } from "../server.js";
 
 const startApiService = async (server: Server) => {
   server.post(
@@ -11,4 +11,4 @@ const startApiService = async (server: Server) => {
   );
 };
 
-export { startApiService };
+export default startApiService;

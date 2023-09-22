@@ -47,6 +47,7 @@ const createVideoCompressionProps = (req: FastifyRequest) => {
     JSON.stringify(req.query as unknown as string)
   );
 
+  console.log("query.allThreads: ", query.allThreads);
   if (query.fps) props.fps = parseInt(query.fps as unknown as string);
   if (query.toFormat) props.toFormat = query.toFormat;
   if (query.allThreads) props.allThreads = query.allThreads === true;

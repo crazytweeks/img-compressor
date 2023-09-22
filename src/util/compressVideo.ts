@@ -55,11 +55,6 @@ const compressAndReturnPath = async (
 
       const options = [
         `-threads ${compressionOptions?.allThreads ? "0" : "1"}`, // Multithreading
-        "-profile:v baseline", // Profile for older devices
-        "-level 3.0", // Level for older devices
-        "-movflags faststart", // Fast start for streaming
-        "-pix_fmt yuv420p", // Pixel format
-        "-vcoder libx264", // Video Codec
       ];
 
       if (compressionOptions?.speed) {

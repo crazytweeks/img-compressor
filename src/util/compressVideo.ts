@@ -10,6 +10,7 @@ interface VideoCompressionOptions {
   allThreads?: boolean;
   fps?: number;
   toFormat?: string;
+  quality?: number;
 }
 
 const dumpVideoToTempDisk = async (media: MultipartFile) => {
@@ -67,6 +68,15 @@ const compressAndReturnPath = async (
         .audioQuality(0)
         .videoBitrate(`0k`)
         .autopad()
+        .size(
+          compressionOptions?.quality
+            ? `${
+                compressionOptions.quality >= 100
+                  ? 100
+                  : compressionOptions.quality
+              }%`
+            : "80%"
+        )
         .on("progress", function (progress) {
           console.log("progress: ", progress.percent);
         })

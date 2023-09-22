@@ -50,6 +50,7 @@ const createVideoCompressionProps = (req: FastifyRequest) => {
   if (query.fps) props.fps = parseInt(query.fps as unknown as string);
   if (query.toFormat) props.toFormat = query.toFormat;
   if (query.allThreads) props.allThreads = query.allThreads === true;
+  if (query.quality) props.quality = query.quality;
 
   return props;
 };

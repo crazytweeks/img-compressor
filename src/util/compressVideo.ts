@@ -103,43 +103,48 @@ const compressVideoAndReturn = async (
   req: FastifyRequest,
   res: FastifyReply
 ) => {
-  const tempFilePath = await dumpVideoToTempDisk(media);
+  try {
+    const tempFilePath = await dumpVideoToTempDisk(media);
 
-  const compressedFilePath = (
-    await compressAndReturnPath(tempFilePath, compressionOptions)
-  ).slice(1);
+    const compressedFilePath = (
+      await compressAndReturnPath(tempFilePath, compressionOptions)
+    ).slice(1);
 
-  const reqUrl = req.url;
-  const reqHost = req.headers.host;
-  const protocol = req.protocol;
+    const reqUrl = req.url;
+    const reqHost = req.headers.host;
+    const protocol = req.protocol;
 
-  const compressedFileUrl = `${protocol}://${reqHost}${compressedFilePath}`;
+    const compressedFileUrl = `${protocol}://${reqHost}${compressedFilePath}`;
 
-  res.header("Content-Type", "json/application");
+    res.header("Content-Type", "json/application");
 
-  const fileSize = fs.statSync(compressedFilePath).size;
-  const fileSizeInMB = fileSize / 1000000.0;
+    const fileSize = fs.statSync(compressedFilePath).size;
+    const fileSizeInMB = fileSize / 1000000.0;
 
-  const originalFileSize = fs.statSync(tempFilePath).size;
-  const originalFileSizeInMB = originalFileSize / 1000000.0;
+    const originalFileSize = fs.statSync(`.${tempFilePath}`).size;
+    const originalFileSizeInMB = originalFileSize / 1000000.0;
 
-  fsRemoveFile(tempFilePath);
+    fsRemoveFile(`.${tempFilePath}`);
 
-  res.send({
-    compressedFileUrl,
-    reqUrl,
-    reqHost,
-    compressedFilePath,
-    size: {
-      fileSize,
-      fileSizeInMB,
+    res.send({
+      compressedFileUrl,
+      reqUrl,
+      reqHost,
+      compressedFilePath,
+      size: {
+        fileSize,
+        fileSizeInMB,
 
-      originalFileSize,
-      originalFileSizeInMB,
-    },
-  });
+        originalFileSize,
+        originalFileSizeInMB,
+      },
+    });
 
-  return compressedFilePath;
+    return compressedFilePath;
+  } catch (err) {
+    console.log("err", err);
+    return err;
+  }
 };
 
 export default compressVideoAndReturn;

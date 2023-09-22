@@ -95,6 +95,7 @@ const compressAndReturnPath = async (
         )
         .audioQuality(0)
         .videoBitrate(`0k`)
+        .preset("superfast")
         .autopad()
         .size(
           compressionOptions?.quality
